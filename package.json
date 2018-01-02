@@ -1,5 +1,5 @@
 {
-  "name": "backbone.call-router",
+  "name": "backbone.call",
   "version": "0.0.1",
   "description": "Router for backbone.js inspired by hapi",
   "main": "./lib/index2.js",
