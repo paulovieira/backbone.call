@@ -26,7 +26,7 @@ var webpackConfig = {
     entry: Path.join(rootDir, 'lib/index.js'),
 
     output: {
-        filename: Path.join(rootDir, `build/${ name }.js`),
+        filename: Path.join(rootDir, `dist/${ name }.js`),
         libraryTarget: 'umd',
         library: 'CallRouter',
         // umdNamedDefine: '...'   // see: http://requirejs.org/docs/whyamd.html#namedmodules
@@ -52,13 +52,6 @@ var webpackConfig = {
             root: "Backbone"
         },
         
-        "backbone.base-router": {
-            commonjs: "backbone.base-router",
-            commonjs2: "backbone.base-router",
-            amd: "backbone.base-router",
-            root: "Backbone.BaseRouter"  // won't work in the umd wrapper, but will be corrected in the postbuild step
-        },
-
         "backbone.marionette": {
             commonjs: "backbone.marionette",
             commonjs2: "backbone.marionette",
@@ -69,9 +62,11 @@ var webpackConfig = {
 
     plugins: [
         new Webpack.BannerPlugin(banner, {}),
+
         new WebpackShellPlugin({
-            onBuildExit:[`node ${ Path.join(rootDir, 'build/fix-umd-wrapper.js') } `]
+            onBuildExit:[`node ${ Path.join(rootDir, 'dist/fix-umd-wrapper.js') } `]
         })
+        
     ]
     
 };
