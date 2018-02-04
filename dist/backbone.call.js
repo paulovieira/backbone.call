@@ -129,7 +129,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                route: route,
 	                originalRoute: origRoute,
 	                uriFragment: fragment,
-	                params: internals._getNamedParams(routeStr, params),
+	                params: internals._getNamedParams.call(router, routeStr, params),
 	                queryString: queryString,
 	                query: internals._getQueryParameters(queryString)
 	            }
