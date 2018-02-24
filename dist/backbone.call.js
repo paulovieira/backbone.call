@@ -125,7 +125,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var queryString = params.pop();
 
 	            var routeData = {
-	                _tsInitial: Date.now(),
+	                tsInitial: Date.now(),
 	                route: route,
 	                originalRoute: origRoute,
 	                uriFragment: fragment,
@@ -168,7 +168,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 			children.forEach((child, i) => {
 	//debugger
-
 				var region;
 				if (parent instanceof Mn.View) {
 					region = this._getRegion(parent, child.region, i)
@@ -181,15 +180,23 @@ return /******/ (function(modules) { // webpackBootstrap
 				    throw new Error('"' + regionName + '" must be an instance of Mn.Region');
 				    // todo: show more details about the region
 				}
+	//debugger
+	            let requestData2 = _.extend({}, requestData, { ts: undefined })
+	            let viewOptions = _.extend({}, child.viewOptions);
+	            viewOptions[this.options.requestProperty] = requestData2;
 
+	            var renderedView;
+	            if (region.hasView() && region.currentView instanceof child.view) {
 
-				// TODO: add a "forceCreate" option (to always create a new instance)
+	                renderedView = region.currentView;
 
-				var viewOptions = child.viewOptions || {};
+	                this._markTimestamp(requestData2);
+	                Mn.triggerMethodOn(renderedView, 'callrouter:process', requestData2, true);
+	                this._processChildren(renderedView, child.children, requestData);
 
-				// TODO: the property should be configurable
-				viewOptions[this.options.requestProperty] = requestData;
-				
+	                return;
+	            }
+			
 
 				if (!_.isFunction(child.handler)) {
 					child.handler = this.defaultHandler;
@@ -199,39 +206,44 @@ return /******/ (function(modules) { // webpackBootstrap
 					child.mount = this.defaultMount;
 				}
 	//debugger
-				var renderedView = child.handler.call(this, child.view, viewOptions, requestData);
 
+				renderedView = child.handler.call(this, child.view, viewOptions);
 				var isPromise = renderedView instanceof Promise;
 
+	            // sync
 				if (isPromise === false) {
 
-	                this._markTimestamp(renderedView)
-
+	                this._markTimestamp(requestData2);
+	                Mn.triggerMethodOn(renderedView, 'callrouter:process', requestData2, false);
 					this._processChildren(renderedView, child.children, requestData);
 					child.mount.call(this, region, renderedView);
+	                //Mn.triggerMethodOn(renderedView, 'callrouter:mount', requestData2, region);
 				}
+
+	            // async
 				else {
 
 					renderedView.then(obj => {
 
-	                    this._markTimestamp(obj.view)
+	                    // the view that was rendered asyncronously in the custom handler
+	                    let renderedView = obj.view;
 
-	                    // obj.view is the view that was rendered asyncronously in the custom handler
-	                    this._processChildren(obj.view, child.children, requestData);
-	                    child.mount.call(this, region, obj.view);
+	                    // copy-paste from the sync version
+	                    this._markTimestamp(requestData2);
+	                    Mn.triggerMethodOn(renderedView, 'callrouter:process', requestData2, false);
+	                    this._processChildren(renderedView, child.children, requestData);
+	                    child.mount.call(this, region, renderedView);
+	                    //Mn.triggerMethodOn(renderedView, 'callrouter:mount', requestData2, region);
 					})
 	                .catch(err => {
 	                    debugger
 	                })
 
-
 				}
-
 			})
-
 	    },
 
-	    defaultHandler: function(viewClass, viewOptions){
+	    defaultHandler: function(viewClass, viewOptions) {
 
 	    	var viewInstance = new viewClass(viewOptions);
 	    	viewInstance.render();
@@ -239,7 +251,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    	return viewInstance;
 	    },
 
-	    defaultMount: function(region, view){
+	    defaultMount: function(region, view) {
 
 	    	region.show(view)
 	    },
@@ -260,13 +272,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    	return region;
 	    },
 
-	    _markTimestamp: function (view) {
+	    _markTimestamp: function (requestDataObj) {
 
-	        //debugger
-	        if (view.options) {
-	            view.options[this.options.requestProperty]._ts = Date.now();
-	        }
-
+	        requestDataObj.ts = Date.now();
 	    }
 
 	})

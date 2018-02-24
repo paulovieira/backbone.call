@@ -65,43 +65,73 @@ forEachAsync(a, function(value, i, next){
 
 
 
-function computeDelta(options) {
-	return options.request._ts - options.request._tsInitial;
+function computeDelta(tsInitial, ts, viewName) {
+
+	console.log(ts - tsInitial);
 }
 
 var ViewA = Mn.View.extend({
+	viewName: 'viewA',
 	attributes: {
 		style: 'border: solid 1px red; padding: 20px; margin: 10px;'
+	},
+	initialize: function(){
+
+		this.model = new Backbone.Model({ someProperty: 'set in initialize @ ' + Date.now() })
 	},
 	templateContext: function(){
 
 		return { 
-			routerDelta: computeDelta(this.options)
 		}
 	},
 	template: _.template(`
-		view A  (delta <%= routerDelta %>)
+		view A  
+		<div data-model-attr="someProperty"><%= someProperty %></div>
 		<div data-region-id="r-a-one"></div>
 		<div data-region-id="r-a-two"></div>
 	`),
 	regions: {
 		'r-a-two': 'div[data-region-id="r-a-two"]',
 		'r-a-one': 'div[data-region-id="r-a-one"]',
+	},
+	onRender: function(){
+
+		console.log(this.viewName + ': onRender')
+	},
+	onAttach: function(){
+
+		console.log(this.viewName + ': onAttach')
+	},
+	onCallrouterProcess: function(request, skip){
+
+		console.log(this.viewName + ': onCallrouterProcess' + ( skip ? ' (handler was skipped)': ''))
+		computeDelta(this.options.request.tsInitial, this.options.request.ts);
+
+		if (skip) {
+			this.model.set({ someProperty: 'updated in onCallrouterProcess @ ' + Date.now() })
+			this.$('[data-model-attr="someProperty"]').html(this.model.get('someProperty'))
+		}
 	}
+
 });
 
 var ViewB = Mn.View.extend({
+	viewName: 'viewB',
 	attributes: {
 		style: 'border: solid 1px green; padding: 20px; margin: 10px;'
+	},
+	initialize: function() {
+
+		this.model = new Backbone.Model({ someProperty: 'set at initialize @ ' + Date.now() })
 	},
 	templateContext: function(){
 
 		return { 
-			routerDelta: computeDelta(this.options)
 		}
 	},
 	template: _.template(`
-		view B  (delta <%= routerDelta %>)
+		view B  
+		<div data-model-attr="someProperty"><%= someProperty %></div>
 		<div data-region-id="r-b-one"></div>
 		<div data-region-id="r-b-two"></div>
 	`),
@@ -109,21 +139,44 @@ var ViewB = Mn.View.extend({
 		'r-b-one': 'div[data-region-id="r-b-one"]',
 		'r-b-two': 'div[data-region-id="r-b-two"]'
 	},
+	onRender: function(){
+
+		console.log(this.viewName + ': onRender')
+    },
+	onAttach: function(){
+
+		console.log(this.viewName + ': onAttach')
+    },
+	onCallrouterProcess: function(request, skip){
+
+		console.log(this.viewName + ': onCallrouterProcess' + ( skip ? ' (handler was skipped)': ''))
+		computeDelta(this.options.request.tsInitial, this.options.request.ts);
+
+		if (skip) {
+			this.model.set({ someProperty: 'updated in onCallrouterProcess @ ' + Date.now() })
+			this.$('[data-model-attr="someProperty"]').html(this.model.get('someProperty'))
+		}
+	}
 
 });
 
 var ViewC = Mn.View.extend({
+	viewName: 'viewC',
 	attributes: {
 		style: 'border: solid 1px blue; padding: 20px; margin: 10px;'
+	},
+	initialize: function() {
+
+		this.model = new Backbone.Model({ someProperty: 'set at initialize @ ' + Date.now() })
 	},
 	templateContext: function(){
 
 		return { 
-			routerDelta: computeDelta(this.options)
 		}
 	},
 	template: _.template(`
-		view C  (delta <%= routerDelta %>)
+		view C  
+		<div data-model-attr="someProperty"><%= someProperty %></div>
 		<div data-region-id="r-c-one"></div>
 		<div data-region-id="r-c-two"></div>
 
@@ -132,48 +185,112 @@ var ViewC = Mn.View.extend({
 		'r-c-one': 'div[data-region-id="r-c-one"]',
 		'r-c-two': 'div[data-region-id="r-c-two"]'
 	},
+	onRender: function(){
+
+		console.log(this.viewName + ': onRender')
+    },
+	onAttach: function(){
+
+		console.log(this.viewName + ': onAttach')
+    },
+	onCallrouterProcess: function(request, skip){
+
+		console.log(this.viewName + ': onCallrouterProcess' + ( skip ? ' (handler was skipped)': ''))
+		computeDelta(this.options.request.tsInitial, this.options.request.ts);
+
+		if (skip) {
+			this.model.set({ someProperty: 'updated in onCallrouterProcess @ ' + Date.now() })
+			this.$('[data-model-attr="someProperty"]').html(this.model.get('someProperty'))
+		}
+	}
 });
 
 var ViewD = Mn.View.extend({
+	viewName: 'viewD',
 	attributes: {
 		style: 'border: solid 1px yellow; padding: 20px; margin: 10px;'
+	},
+	initialize: function() {
+
+		this.model = new Backbone.Model({ someProperty: 'set at initialize @ ' + Date.now() })
 	},
 	templateContext: function(){
 
 		return { 
-			routerDelta: computeDelta(this.options)
 		}
 	},
 	regions: {
 		'r-d-one': 'div[data-region-id="r-d-one"]',
 		'r-d-two': 'div[data-region-id="r-d-two"]'
 	},
+	onRender: function(){
+
+		console.log(this.viewName + ': onRender')
+    },
+	onAttach: function(){
+
+		console.log(this.viewName + ': onAttach')
+    },
 	template: _.template(`
-		view D  (delta <%= routerDelta %>)
+		view D  
+		<div data-model-attr="someProperty"><%= someProperty %></div>
 		<div data-region-id="r-d-one"></div>
 		<div data-region-id="r-d-two"></div>
-	`)
+	`),
+	onCallrouterProcess: function(request, skip){
+
+		console.log(this.viewName + ': onCallrouterProcess' + ( skip ? ' (handler was skipped)': ''))
+		computeDelta(this.options.request.tsInitial, this.options.request.ts);
+
+		if (skip) {
+			this.model.set({ someProperty: 'updated in onCallrouterProcess @ ' + Date.now() })
+			this.$('[data-model-attr="someProperty"]').html(this.model.get('someProperty'))
+		}
+	}
 });
 
 var ViewE = Mn.View.extend({
+	viewName: 'viewE',
 	attributes: {
 		style: 'border: solid 1px pink; padding: 20px; margin: 10px;'
+	},
+	initialize: function() {
+
+		this.model = new Backbone.Model({ someProperty: 'set at initialize @ ' + Date.now() })
 	},
 	templateContext: function(){
 
 		return { 
-			routerDelta: computeDelta(this.options)
 		}
 	},
 	regions: {
 		'r-e-one': 'div[data-region-id="r-e-one"]',
 		'r-e-two': 'div[data-region-id="r-e-two"]'
 	},
+	onRender: function(){
+
+		console.log(this.viewName + ': onRender')
+    },
+	onAttach: function(){
+
+		console.log(this.viewName + ': onAttach')
+    },
 	template: _.template(`
-		view E  (delta <%= routerDelta %>)
+		view E  
+		<div data-model-attr="someProperty"><%= someProperty %></div>
 		<div data-region-id="r-e-one"></div>
 		<div data-region-id="r-e-two"></div>
-	`)
+	`),
+	onCallrouterProcess: function(request, skip){
+
+		console.log(this.viewName + ': onCallrouterProcess' + ( skip ? ' (handler was skipped)': ''))
+		computeDelta(this.options.request.tsInitial, this.options.request.ts);
+
+		if (skip) {
+			this.model.set({ someProperty: 'updated in onCallrouterProcess @ ' + Date.now() })
+			this.$('[data-model-attr="someProperty"]').html(this.model.get('someProperty'))
+		}
+	}
 });
 
 
@@ -192,7 +309,7 @@ var router = new Backbone.CallRouter({
 
 // foo 
 
-var fooPath = {
+var foo = {
 	path: 'foo',
 	validate: function(){
 	},
@@ -214,7 +331,6 @@ var fooPath = {
 		    			return new Promise((resolve, reject) => {
 		    				setTimeout(() => {
 		    					
-		    					viewOptions.request._ts = Date.now();
 		    					var view = new viewClass(viewOptions);
 		    					view.render();
 		    					
@@ -240,38 +356,113 @@ var fooPath = {
 	]
 };
 
-router.addRoute(fooPath);
+router.addRoute(foo);
 
-// bar 
+// foo-2
 
-var barPath = {
-	path: 'bar',
+var foo2 = {
+	path: 'foo-2',
 	validate: function(){
 	},
 	children: [
 	{
-		view: ViewC,
-		
+		view: ViewA,
 		children: [
 		{
-			view: ViewD,
-			region: 'r-c-one',
+			view: ViewB,
+			region: 'r-a-one',
+			/*
+			children: {
+				view: ViewD,
+
+			    children: {
+			    	view: ViewE,
+		    	    render: function(viewClass, viewOptions){
+		    			//debugger
+		    			return new Promise((resolve, reject) => {
+		    				setTimeout(() => {
+		    					
+		    					var view = new viewClass(viewOptions);
+		    					view.render();
+		    					
+		    					//debugger
+		    					resolve({ view: view});
+		    					//resolve()
+		    				}, 1000)
+		    			});
+
+		    	    },
+			    }
+
+			}
+			*/
 		},
 		
 		{
-			view: ViewE,
-			region: 'r-c-two',
+			view: ViewD,
+			//region: 'r-two',
 		}
 		]
 	}
 	]
 };
 
-router.addRoute(barPath);
+router.addRoute(foo2);
+
+// bar 
+
+var bar = {
+	path: 'bar',
+	validate: function(){
+	},
+	children: [
+	{
+		view: ViewC,
+		children: [
+		{
+			view: ViewB,
+			region: 'r-c-one',
+			/*
+			children: {
+				view: ViewD,
+
+			    children: {
+			    	view: ViewE,
+		    	    render: function(viewClass, viewOptions){
+		    			//debugger
+		    			return new Promise((resolve, reject) => {
+		    				setTimeout(() => {
+		    					
+		    					var view = new viewClass(viewOptions);
+		    					view.render();
+		    					
+		    					//debugger
+		    					resolve({ view: view});
+		    					//resolve()
+		    				}, 1000)
+		    			});
+
+		    	    },
+			    }
+
+			}
+			*/
+		},
+		
+		{
+			view: ViewD,
+			//region: 'r-two',
+		}
+		]
+	}
+	]
+};
+
+router.addRoute(bar);
 
 // baz 
 
-var bazPath = {
+var baz = {
 	path: 'baz',
 	validate: function(){
 	},
@@ -284,7 +475,6 @@ var bazPath = {
 
 				setTimeout(() => {
 
-					viewOptions.request._ts = Date.now();
 					let view = new viewClass(viewOptions);
 					view.render();
 					
@@ -301,7 +491,6 @@ var bazPath = {
 
 	    			setTimeout(() => {
 
-	    				viewOptions.request._ts = Date.now();
 	    				let view = new viewClass(viewOptions);
 	    				view.render();
 	    				
@@ -318,7 +507,6 @@ var bazPath = {
 
 	        			setTimeout(() => {
 
-	        				viewOptions.request._ts = Date.now();
 	        				let view = new viewClass(viewOptions);
 	        				view.render();
 	        				
@@ -351,7 +539,6 @@ var bazPath = {
 
 	    				setTimeout(() => {
 
-	    					viewOptions.request._ts = Date.now();
 	    					let view = new viewClass(viewOptions);
 	    					view.render();
 	    					
@@ -376,17 +563,12 @@ var bazPath = {
 
     	    				setTimeout(() => {
 
-    	    					viewOptions.request._ts = Date.now();
     	    					let view = new viewClass(viewOptions);
     	    					view.render();
     	    					
     	    					resolve({ view: view});
     	    				}, 1000)
     	    			});
-
-    	    			let _ts = Date.now();
-    	    			console.log('_ts for the promise for viewE (in the handler): ', _ts);
-    	    			p._ts = _ts;
 
     	    			return p;
     	    	    },
@@ -403,17 +585,12 @@ var bazPath = {
 
     	    					setTimeout(() => {
 
-    	    						viewOptions.request._ts = Date.now();
     	    						let view = new viewClass(viewOptions);
     	    						view.render();
     	    						
     	    						resolve({ view: view});
     	    					}, 500)
     	    				});
-
-    	    				let _ts = Date.now();
-    	    				console.log('_ts for the promise for viewB (in the handler): ', _ts);
-    	    				p._ts = _ts;
 
     	    				return p;
     	    		    },
@@ -434,7 +611,7 @@ var bazPath = {
 	]
 };
 
-router.addRoute(bazPath);
+router.addRoute(baz);
 
 /*
 var router1 = new Backbone.CallRouter([
@@ -461,7 +638,6 @@ var router1 = new Backbone.CallRouter([
 				    			return new Promise((resolve, reject) => {
 				    				setTimeout(() => {
 				    					
-				    					viewOptions.request._ts = Date.now();
 				    					var view = new viewClass(viewOptions);
 				    					view.render();
 				    					
