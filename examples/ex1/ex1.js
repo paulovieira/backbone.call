@@ -1,3 +1,14 @@
+$('head').append(`
+	<style>
+		div#test {
+			transition: height 0.4s;
+		}
+	</style>
+`)
+setTimeout(() => {
+
+	$('div#test').css('height', 200)
+}, 1000)
 /*
 
 // TODO: handle error?
@@ -105,7 +116,7 @@ var ViewA = Mn.View.extend({
 	onCallrouterProcess: function(request, skip){
 
 		console.log(this.viewName + ': onCallrouterProcess' + ( skip ? ' (handler was skipped)': ''))
-		computeDelta(this.options.request.tsInitial, this.options.request.ts);
+		computeDelta(request.tsInitial, request.ts);
 
 		if (skip) {
 			this.model.set({ someProperty: 'updated in onCallrouterProcess @ ' + Date.now() })
@@ -150,7 +161,7 @@ var ViewB = Mn.View.extend({
 	onCallrouterProcess: function(request, skip){
 
 		console.log(this.viewName + ': onCallrouterProcess' + ( skip ? ' (handler was skipped)': ''))
-		computeDelta(this.options.request.tsInitial, this.options.request.ts);
+		computeDelta(request.tsInitial, request.ts);
 
 		if (skip) {
 			this.model.set({ someProperty: 'updated in onCallrouterProcess @ ' + Date.now() })
@@ -196,7 +207,7 @@ var ViewC = Mn.View.extend({
 	onCallrouterProcess: function(request, skip){
 
 		console.log(this.viewName + ': onCallrouterProcess' + ( skip ? ' (handler was skipped)': ''))
-		computeDelta(this.options.request.tsInitial, this.options.request.ts);
+		computeDelta(request.tsInitial, request.ts);
 
 		if (skip) {
 			this.model.set({ someProperty: 'updated in onCallrouterProcess @ ' + Date.now() })
@@ -240,7 +251,7 @@ var ViewD = Mn.View.extend({
 	onCallrouterProcess: function(request, skip){
 
 		console.log(this.viewName + ': onCallrouterProcess' + ( skip ? ' (handler was skipped)': ''))
-		computeDelta(this.options.request.tsInitial, this.options.request.ts);
+		computeDelta(request.tsInitial, request.ts);
 
 		if (skip) {
 			this.model.set({ someProperty: 'updated in onCallrouterProcess @ ' + Date.now() })
@@ -284,7 +295,7 @@ var ViewE = Mn.View.extend({
 	onCallrouterProcess: function(request, skip){
 
 		console.log(this.viewName + ': onCallrouterProcess' + ( skip ? ' (handler was skipped)': ''))
-		computeDelta(this.options.request.tsInitial, this.options.request.ts);
+		computeDelta(request.tsInitial, request.ts);
 
 		if (skip) {
 			this.model.set({ someProperty: 'updated in onCallrouterProcess @ ' + Date.now() })

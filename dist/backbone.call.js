@@ -181,17 +181,17 @@ return /******/ (function(modules) { // webpackBootstrap
 				    // todo: show more details about the region
 				}
 	//debugger
-	            let requestData2 = _.extend({}, requestData, { ts: undefined })
-	            let viewOptions = _.extend({}, child.viewOptions);
-	            viewOptions[this.options.requestProperty] = requestData2;
+	            let requestDataClone = _.extend({}, requestData, { ts: undefined })
+	            let viewOptionsClone = _.extend({}, child.viewOptions);
+	            viewOptionsClone[this.options.requestProperty] = requestDataClone;
 
 	            var renderedView;
 	            if (region.hasView() && region.currentView instanceof child.view) {
 
 	                renderedView = region.currentView;
 
-	                this._markTimestamp(requestData2);
-	                Mn.triggerMethodOn(renderedView, 'callrouter:process', requestData2, true);
+	                this._markTimestamp(requestDataClone);
+	                Mn.triggerMethodOn(renderedView, 'callrouter:process', true, requestDataClone, viewOptionsClone);
 	                this._processChildren(renderedView, child.children, requestData);
 
 	                return;
@@ -207,17 +207,17 @@ return /******/ (function(modules) { // webpackBootstrap
 				}
 	//debugger
 
-				renderedView = child.handler.call(this, child.view, viewOptions);
+				renderedView = child.handler.call(this, child.view, viewOptionsClone);
 				var isPromise = renderedView instanceof Promise;
 
 	            // sync
 				if (isPromise === false) {
 
-	                this._markTimestamp(requestData2);
-	                Mn.triggerMethodOn(renderedView, 'callrouter:process', requestData2, false);
+	                this._markTimestamp(requestDataClone);
+	                Mn.triggerMethodOn(renderedView, 'callrouter:process', false, requestDataClone, viewOptionsClone);
 					this._processChildren(renderedView, child.children, requestData);
 					child.mount.call(this, region, renderedView);
-	                //Mn.triggerMethodOn(renderedView, 'callrouter:mount', requestData2, region);
+	                //Mn.triggerMethodOn(renderedView, 'callrouter:mount', requestDataClone, region);
 				}
 
 	            // async
@@ -229,11 +229,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    let renderedView = obj.view;
 
 	                    // copy-paste from the sync version
-	                    this._markTimestamp(requestData2);
-	                    Mn.triggerMethodOn(renderedView, 'callrouter:process', requestData2, false);
+	                    this._markTimestamp(requestDataClone);
+	                    Mn.triggerMethodOn(renderedView, 'callrouter:process', false, requestDataClone, viewOptionsClone);
 	                    this._processChildren(renderedView, child.children, requestData);
 	                    child.mount.call(this, region, renderedView);
-	                    //Mn.triggerMethodOn(renderedView, 'callrouter:mount', requestData2, region);
+	                    //Mn.triggerMethodOn(renderedView, 'callrouter:mount', requestDataClone, region);
 					})
 	                .catch(err => {
 	                    debugger
