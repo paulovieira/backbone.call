@@ -191,7 +191,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                renderedView = region.currentView;
 
 	                this._markTimestamp(requestDataClone);
-	                Mn.triggerMethodOn(renderedView, 'callrouter:process', true, requestDataClone, viewOptionsClone);
+	                //Mn.triggerMethodOn(renderedView, 'callrouter:process', true, requestDataClone, viewOptionsClone);
+	                renderedView.trigger('callrouter:process', true, requestDataClone, viewOptionsClone);
 	                this._processChildren(renderedView, child.children, requestData);
 
 	                return;
@@ -214,7 +215,8 @@ return /******/ (function(modules) { // webpackBootstrap
 				if (isPromise === false) {
 
 	                this._markTimestamp(requestDataClone);
-	                Mn.triggerMethodOn(renderedView, 'callrouter:process', false, requestDataClone, viewOptionsClone);
+	                //Mn.triggerMethodOn(renderedView, 'callrouter:process', false, requestDataClone, viewOptionsClone);
+	                renderedView.trigger('callrouter:process', false, requestDataClone, viewOptionsClone);
 					this._processChildren(renderedView, child.children, requestData);
 					child.mount.call(this, region, renderedView);
 	                //Mn.triggerMethodOn(renderedView, 'callrouter:mount', requestDataClone, region);
@@ -230,7 +232,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	                    // copy-paste from the sync version
 	                    this._markTimestamp(requestDataClone);
-	                    Mn.triggerMethodOn(renderedView, 'callrouter:process', false, requestDataClone, viewOptionsClone);
+	                    //Mn.triggerMethodOn(renderedView, 'callrouter:process', false, requestDataClone, viewOptionsClone);
+	                    renderedView.trigger('callrouter:process', false, requestDataClone, viewOptionsClone);
 	                    this._processChildren(renderedView, child.children, requestData);
 	                    child.mount.call(this, region, renderedView);
 	                    //Mn.triggerMethodOn(renderedView, 'callrouter:mount', requestDataClone, region);
